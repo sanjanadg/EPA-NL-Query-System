@@ -4,6 +4,9 @@ A natural language query system for EPA (Environmental Protection Agency) datase
 
 The relevant information is then connected to the original query with a reliable context.
 
+** Please note that the JSON datasets are not provided in this repository. Feel free to contact me if you would like access to them! 
+These datasets are critical to my app RevealTheIngredient: https://apps.apple.com/us/app/revealtheingredient/id6449441710
+
 ## Flow Overview
 ```
 Query (contains ingredient name)
