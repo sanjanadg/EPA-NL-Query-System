@@ -1,12 +1,40 @@
 """
 Main entry point for the EPA Query System.
-Example usage and interactive interface.
 """
 import json
+from typing import Optional
 from query_system import EPAQuerySystem
 
 
-def print_results(result: dict):
+def generate_llm_answer(query: str, result: dict, system: EPAQuerySystem) -> Optional[str]:
+    """
+    Generate an LLM answer using the query results.
+    
+    Args:
+        query: Original user query
+        result: Results dictionary from query system
+        system: EPAQuerySystem instance
+        
+    Returns:
+        LLM-generated answer string, or None if generation fails
+    """
+    try:
+        answer = system.generate_answer(query, result)
+        return answer
+    except Exception as e:
+        print(f"Error generating LLM answer: {e}")
+        return None
+
+
+def print_results(result: dict, system: Optional[EPAQuerySystem] = None, generate_answer: bool = True):
+    """
+    Print query results and optionally generate LLM answer.
+    
+    Args:
+        result: Results dictionary from query system
+        system: Optional EPAQuerySystem instance (required for LLM answer generation)
+        generate_answer: Whether to generate and display LLM answer
+    """
     print("\n" + "="*60)
     print("QUERY RESULTS")
     print("="*60)
@@ -15,7 +43,8 @@ def print_results(result: dict):
         print(f"Error: {result.get('error', 'Unknown error')}")
         return
     
-    print(f"Query: {result.get('query', 'N/A')}")
+    query = result.get('query', 'N/A')
+    print(f"Query: {query}")
     print(f"Dataset: {result.get('dataset', result.get('selected_dataset', 'N/A'))}")
     
     if 'selection_confidence' in result:
@@ -34,6 +63,21 @@ def print_results(result: dict):
                 print(f"  {key}: {value}")
     else:
         print("\nNo matching results found.")
+    
+    # Generate and display LLM answer if requested and system is available
+    if generate_answer and system:
+        print("\n" + "-" * 60)
+        print("GENERATING LLM ANSWER...")
+        print("-" * 60)
+        llm_answer = generate_llm_answer(query, result, system)
+        if llm_answer:
+            print("\n" + "=" * 60)
+            print("LLM ANSWER")
+            print("=" * 60)
+            print(llm_answer)
+            print("=" * 60)
+        else:
+            print("Could not generate LLM answer.")
     
     print("="*60 + "\n")
 
@@ -127,7 +171,7 @@ def interactive_mode():
                 continue
             
             result = system.query(query)
-            print_results(result)
+            print_results(result, system=system, generate_answer=True)
             
         except KeyboardInterrupt:
             print("\n\nGoodbye!")
