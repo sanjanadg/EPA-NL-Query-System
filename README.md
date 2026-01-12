@@ -20,3 +20,7 @@ Query (contains ingredient name)
     ↓   
 [Step 6] Use LLM to answer original query using relevant information about ingredient extracted from dataset.
 ```
+
+## Sample Use Case
+[In this case, the user asks about chlordane. The model will follow the above flow to deduce the best dataset to search.](images/sample1_1.png)
+[The model returns 10 candidate ingredients. Then will generate a response to the original query.](images/sample1_2.png)
